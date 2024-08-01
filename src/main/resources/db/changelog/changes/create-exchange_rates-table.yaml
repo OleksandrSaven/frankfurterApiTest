@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-exchange_rates-table
+      author: osa
+      changes:
+        - createTable:
+            tableName: exchange_rates
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: currency_conversions_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: currency
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: rate
+                  type: decimal(38, 5)
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: exchange_rates
+            baseColumnNames: currency_conversions_id
+            referencedTableName: currency_conversions
+            constraintName: fk_exchange_rates_currency_conversions
+            referencedColumnNames: id

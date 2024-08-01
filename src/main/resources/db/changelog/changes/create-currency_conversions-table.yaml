@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-currency_conversion-table
+      author: osa
+      changes:
+        - createTable:
+            tableName: currency_conversions
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: amount
+                  type: bigint
+              - column:
+                  name: base
+                  type: varchar(5)
+              - column:
+                  name: date
+                  type: date
+                  constraints:
+                    unique: true
