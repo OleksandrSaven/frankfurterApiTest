@@ -62,7 +62,7 @@ class CurrencyServiceImplTest {
         CurrencyConversion conversion = new CurrencyConversion();
         conversion.setBase("USD");
         conversion.setDate(LocalDate.now());
-        conversion.setRates(Map.of("EUR", new BigDecimal("0.85")));
+        conversion.setRates(Map.of("EUR", new BigDecimal("0.92353")));
 
         when(currencyRepository.findByDateAndBase(any(LocalDate.class), eq("EUR")))
                 .thenReturn(Optional.empty());
@@ -74,7 +74,7 @@ class CurrencyServiceImplTest {
         assertNotNull(response);
         assertEquals("USD", response.getSourceCurrency());
         assertEquals("EUR", response.getTargetCurrency());
-        assertEquals(new BigDecimal("0.92353"), response.getExchangeRate());
+        assertEquals(new BigDecimal("0.92687"), response.getExchangeRate());
         verify(currencyRepository, times(1)).save(any(CurrencyConversion.class));
     }
 

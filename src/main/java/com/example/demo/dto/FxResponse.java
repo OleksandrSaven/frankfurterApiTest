@@ -1,9 +1,9 @@
 package com.example.demo.dto;
 
-import lombok.Getter;
-import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import lombok.Getter;
+import lombok.Setter;
 
 @Setter
 @Getter

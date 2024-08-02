@@ -5,11 +5,6 @@ import com.example.demo.dto.FxResponseTimeSeries;
 import com.example.demo.model.CurrencyConversion;
 import com.example.demo.repository.CurrencyRepository;
 import com.example.demo.service.CurrencyService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -17,8 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
@@ -36,21 +34,16 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     public FxResponse getFxRates(String targetCurrency) {
-        if (getFromDb(targetCurrency).isPresent()) {
-            CurrencyConversion currencyConversion = getFromDb(targetCurrency).get();
-            return mapToFxResponse(currencyConversion, targetCurrency);
-        } else {
-            return fetchAndSaveFxRate(targetCurrency);
-        }
+        return getFromDb(targetCurrency).isPresent()
+                ? mapToFxResponse(getFromDb(targetCurrency).get(),
+                targetCurrency) : fetchAndSaveFxRate(targetCurrency);
     }
 
     @Override
     public FxResponseTimeSeries getFxRatesTimeSeries(String targetCurrency) {
-        if (getFromDbTimeSeries(targetCurrency).isPresent()) {
-            return getFromDbTimeSeries(targetCurrency).get();
-        } else {
-            return fetchAndSaveTimeSeries(targetCurrency);
-        }
+        return getFromDbTimeSeries(targetCurrency).isPresent()
+                ? getFromDbTimeSeries(targetCurrency).get() :
+                fetchAndSaveTimeSeries(targetCurrency);
     }
 
     private FxResponseTimeSeries fetchAndSaveTimeSeries(String targetCurrency) {
@@ -86,7 +79,8 @@ public class CurrencyServiceImpl implements CurrencyService {
     private Optional<FxResponseTimeSeries> getFromDbTimeSeries(String targetCurrency) {
         LocalDate today = LocalDate.now();
         List<Optional<CurrencyConversion>> byDateBetweenAndBase =
-                currencyRepository.findByDateBetweenAndBase(today.minusDays(DAYS_TO_SUBSTRACT), today, BASE);
+                currencyRepository.findByDateBetweenAndBase(
+                        today.minusDays(DAYS_TO_SUBSTRACT), today, BASE);
         if (byDateBetweenAndBase.size() > 2) {
             FxResponseTimeSeries responce = new FxResponseTimeSeries();
             responce.setBase(BASE);
@@ -140,7 +134,8 @@ public class CurrencyServiceImpl implements CurrencyService {
         }
     }
 
-    private FxResponse mapToFxResponse(CurrencyConversion currencyConversion, String targetCurrency) {
+    private FxResponse mapToFxResponse(CurrencyConversion currencyConversion,
+                                       String targetCurrency) {
         FxResponse response = new FxResponse();
         response.setDate(currencyConversion.getDate());
         response.setSourceCurrency(currencyConversion.getBase());

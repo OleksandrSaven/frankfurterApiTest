@@ -19,7 +19,7 @@ public class CurrencyConversionController {
     @GetMapping
     public FxResponse fxRates(@RequestParam(required = false,
             defaultValue = "EUR") String targetCurrency) {
-        return  currencyService.getFxRates(targetCurrency);
+        return currencyService.getFxRates(targetCurrency);
     }
 
     @GetMapping("/{targetCurrency}")
